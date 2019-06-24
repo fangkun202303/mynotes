@@ -1,8 +1,11 @@
 package com.moduls.mynotes.mapper;
 
+import com.moduls.mynotes.pojo.Customer;
 import com.moduls.mynotes.pojo.Repair;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @description: 维修
@@ -22,8 +25,11 @@ public interface RepairMapper {
     Integer save(Repair repair);
 
     @Update("update repair set item=#{item}, partsname=#{partsName}, partsprice=#{partsPrice}, cost=#{cost} where repairid=#{repairId}")
-    Insert update(Repair repair);
+    Integer update(Repair repair);
 
     @Delete("delete from repair where repairid=#{repairId}")
-    Insert delete(@Param("repairId") Insert repairId);
+    Integer delete(@Param("repairId") Integer repairId);
+
+    @Select("select repairid, code, item, partscode, partsname, partsprice, cost, createtime, customerid from repair where customerid=#{customerId}")
+    List<Repair> listOfRepair(@Param("customerId") Integer customerId);
 }

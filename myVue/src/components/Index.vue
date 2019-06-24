@@ -1,11 +1,32 @@
 <template>
   <div>
     <!-- 列表  START-->
-    <el-button type="primary" @click="chengShowValue()">
-      添加
-      </el-button>
+    <el-button type="primary" @click="chengShowValue()">添加</el-button>
     <div v-if="showA">
-      <el-table :data="tableData" border style="width: 100%">
+    <el-table
+      :data="tableData"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="id"
+      border
+      lazy
+      :load="load"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      
+    >
+      <!-- <el-table-column></el-table-column> @row-click="selected(scope.row)" -->
+      <el-table-column prop="date" label="日期" sortable width="180"></el-table-column>
+      <el-table-column prop="name" label="姓名" sortable width="180"></el-table-column>
+      <el-table-column  prop="address" label="地址"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="text" size="small" >查看</el-button>
+            <el-button type="text" size="small" @click="updateRow(scope.row)">编辑</el-button>
+            <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>      
+    </el-table>
+      
+      <!-- <el-table :data="tableData" border style="width: 100%">
         <el-table-column fixed prop="date" label="日期" width="150"></el-table-column>
         <el-table-column prop="name" label="姓名" width="120"></el-table-column>
         <el-table-column prop="province" label="省份" width="120"></el-table-column>
@@ -19,14 +40,14 @@
             <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
-      <el-button-group>
+      </el-table> -->
+      <!-- <el-button-group>
         <el-button type="primary" icon="el-icon-arrow-left">上一页</el-button>
         <el-button type="primary">
           下一页
           <i class="el-icon-arrow-right el-icon--right"></i>
         </el-button>
-      </el-button-group>
+      </el-button-group> -->
     </div>
     <!-- 列表  END -->
     <div v-if="showB" style="width: 50%;margin-left: 20%;">
@@ -87,36 +108,29 @@ export default {
     return {
       tableData: [
         {
+          id: 1,
           date: "2016-05-02",
           name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
+          address: "上海市普陀区金沙江路 1518 弄"
         },
         {
+          id: 2,
           date: "2016-05-04",
           name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1517 弄",
-          zip: 200333
+          address: "上海市普陀区金沙江路 1517 弄"
         },
         {
+          id: 3,
           date: "2016-05-01",
           name: "王小虎",
-          province: "上海",
-          city: "普陀区",
           address: "上海市普陀区金沙江路 1519 弄",
-          zip: 200333
+          hasChildren: true
         },
         {
+          id: 4,
           date: "2016-05-03",
           name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1516 弄",
-          zip: 200333
+          address: "上海市普陀区金沙江路 1516 弄"
         }
       ],
       showA: true,
@@ -132,6 +146,9 @@ export default {
           desc: ''
         }
     };
+  },
+  mounted(){
+
   },
   methods: {
     chengShowValue(){
@@ -156,6 +173,27 @@ export default {
     cancel(){
       this.showA=true;
       this.showB=false;
+    },
+    load(tree, treeNode, resolve) {
+      setTimeout(() => {
+        resolve([
+          {
+            id: 31,
+            date: "2016-05-01",
+            name: "王小虎",
+            address: "上海市普陀区金沙江路 1519 弄"
+          },
+          {
+            id: 32,
+            date: "2016-05-01",
+            name: "王小虎",
+            address: "上海市普陀区金沙江路 1519 弄"
+          }
+        ]);
+      }, 1000);
+    },
+    selected(row){
+      console.log(row)
     }
   }
 };

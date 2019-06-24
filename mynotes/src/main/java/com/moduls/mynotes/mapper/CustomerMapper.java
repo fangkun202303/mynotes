@@ -4,6 +4,8 @@ import com.moduls.mynotes.pojo.Customer;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @description: 客户mapper
  * @program: mynotes
@@ -22,8 +24,11 @@ public interface CustomerMapper {
     Integer save(Customer customer);
 
     @Update("update customer set name=#{name}, sex=#{sex}, phone=#{phone}, carnum=#{carNum}, address=#{address} where customerid=#{customerId}")
-    Insert update(Customer customer);
+    Integer update(Customer customer);
 
     @Delete("delete from customer where customerid=#{customerId}")
-    Insert delete(Insert customerId);
+    Integer delete(@Param("customerId") Integer customerId);
+
+    @Select("select customerid, code, name, sex, phone, carnum, address, createtime from customer where createtime<#{after} and createtime> #{before}")
+    List<Customer> listOfCustomer(String before, String after);
 }

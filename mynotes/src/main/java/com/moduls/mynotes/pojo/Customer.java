@@ -1,6 +1,7 @@
 package com.moduls.mynotes.pojo;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @description: 客户
@@ -19,10 +20,7 @@ public class Customer implements Serializable {
     private String carNum;
     private String address;
     private String createTime;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
+    private List<Repair> repairs;
 
     public Integer getCustomerId() {
         return customerId;
@@ -88,6 +86,14 @@ public class Customer implements Serializable {
         this.createTime = createTime;
     }
 
+    public List<Repair> getRepairs() {
+        return repairs;
+    }
+
+    public void setRepairs(List<Repair> repairs) {
+        this.repairs = repairs;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -99,6 +105,7 @@ public class Customer implements Serializable {
                 ", carNum='" + carNum + '\'' +
                 ", address='" + address + '\'' +
                 ", createTime='" + createTime + '\'' +
+                ", repairs=" + repairs +
                 '}';
     }
 }
