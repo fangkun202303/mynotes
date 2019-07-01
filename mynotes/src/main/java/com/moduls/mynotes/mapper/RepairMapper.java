@@ -30,6 +30,6 @@ public interface RepairMapper {
     @Delete("delete from repair where repairid=#{repairId}")
     Integer delete(@Param("repairId") Integer repairId);
 
-    @Select("select repairid, code, item, partscode, partsname, partsprice, cost, createtime, customerid from repair where customerid=#{customerId}")
-    List<Repair> listOfRepair(@Param("customerId") Integer customerId);
+    @Select("select repairid, customercode, item, partscode, partsname, partsprice, cost, createtime, customerid from repair where customercode=#{customerCode}")
+    List<Repair> listOfRepair(@Param("customerCode") String customerCode);
 }

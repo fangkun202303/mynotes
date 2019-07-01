@@ -1,94 +1,63 @@
 <template>
   <div>
     <!-- 列表  START-->
-    <el-button type="primary" @click="chengShowValue()">添加</el-button>
     <div v-if="showA">
-    <el-table
-      :data="tableData"
-      style="width: 100%;margin-bottom: 20px;"
-      row-key="id"
-      border
-      lazy
-      :load="load"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      
-    >
-      <!-- <el-table-column></el-table-column> @row-click="selected(scope.row)" -->
-      <el-table-column prop="date" label="日期" sortable width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" sortable width="180"></el-table-column>
-      <el-table-column  prop="address" label="地址"></el-table-column>
+      <el-date-picker v-model="dateValue" @change="getDate()" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" ></el-date-picker>
+      <el-button type="primary" @click="chengShowValue()">添加</el-button>
+      <el-table
+        :data="tableData"
+        style="width: 100%;margin-bottom: 20px;"
+        row-key="customerId"
+        border
+        lazy
+        :load="load"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      >
+        <el-table-column prop="name" label="姓名" sortable width="180"></el-table-column>
+        <el-table-column prop="sex" label="性别" sortable width="180" :formatter="sexFormatter"></el-table-column>
+        <el-table-column prop="phone" label="联系方式" sortable width="180"></el-table-column>
+        <el-table-column prop="carNum" label="车牌号" sortable width="180"></el-table-column>
+        <el-table-column prop="address" label="地址" sortable width="180"></el-table-column>
+        <el-table-column prop="item" label="维修项目" sortable width="180"></el-table-column>
+        <el-table-column prop="cost" label="维修价格" sortable width="180"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small" >查看</el-button>
-            <el-button type="text" size="small" @click="updateRow(scope.row)">编辑</el-button>
-            <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>      
-    </el-table>
-      
-      <!-- <el-table :data="tableData" border style="width: 100%">
-        <el-table-column fixed prop="date" label="日期" width="150"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="120"></el-table-column>
-        <el-table-column prop="province" label="省份" width="120"></el-table-column>
-        <el-table-column prop="city" label="市区" width="120"></el-table-column>
-        <el-table-column prop="address" label="地址" width="500"></el-table-column>
-        <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small" >查看</el-button>
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
             <el-button type="text" size="small" @click="updateRow(scope.row)">编辑</el-button>
             <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
-      </el-table> -->
-      <!-- <el-button-group>
-        <el-button type="primary" icon="el-icon-arrow-left">上一页</el-button>
-        <el-button type="primary">
-          下一页
-          <i class="el-icon-arrow-right el-icon--right"></i>
-        </el-button>
-      </el-button-group> -->
+      </el-table>
     </div>
     <!-- 列表  END -->
     <div v-if="showB" style="width: 50%;margin-left: 20%;">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="活动名称">
-          <el-input v-model="form.name"></el-input>
+      <el-form ref="form" :model="form" label-width="120px">
+        <el-form-item label="客户名称">
+          <el-input v-model="form.name" placeholder="请输入客户名称"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label="客户性别">
+          <el-select v-model="form.sex" placeholder="请选择客户性别">
+            <el-option label="男" value="1"></el-option>
+            <el-option label="女" value="0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动时间">
-          <el-col :span="11">
-            <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-          </el-col>
+        <el-form-item label="客户联系方式">
+          <el-input v-model="form.phone" placeholder="请输入客户联系方式"></el-input>
         </el-form-item>
-        <el-form-item label="即时配送">
-          <el-switch v-model="form.delivery"></el-switch>
+        <el-form-item label="客户车牌号">
+          <el-input v-model="form.carNum" placeholder="请输入客户车牌号"></el-input>
         </el-form-item>
-        <el-form-item label="活动性质">
-          <el-checkbox-group v-model="form.type">
-            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-            <el-checkbox label="地推活动" name="type"></el-checkbox>
-            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-          </el-checkbox-group>
+        <el-form-item label="维修内容">
+          <el-input v-model="form.item" placeholder="请输入维修内容"></el-input>
         </el-form-item>
-        <el-form-item label="特殊资源">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="线上品牌商赞助"></el-radio>
-            <el-radio label="线下场地免费"></el-radio>
-          </el-radio-group>
+        <el-form-item label="维修费用">
+          <el-input v-model="form.cost" placeholder="请输入维修费用"></el-input>
         </el-form-item>
-        <el-form-item label="活动形式">
-          <el-input type="textarea" v-model="form.desc"></el-input>
+        <el-form-item label="维修时间">
+          <el-date-picker v-model="form.createTime" @change="getDateInForm()" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="客户地址">
+          <el-input v-model="form.address" placeholder="请输入客户地址"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -100,7 +69,7 @@
 </template>
 
 <script>
-import IndexAdd from '@/components/IndexAdd'
+import IndexAdd from "@/components/IndexAdd";
 
 export default {
   name: "Index",
@@ -108,92 +77,173 @@ export default {
     return {
       tableData: [
         {
-          id: 1,
-          date: "2016-05-02",
+          customerId: 1,
+          code: "wangxiaohu",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
+          sex: "1",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12,
         },
         {
-          id: 2,
-          date: "2016-05-04",
+          customerId: 2,
+          code: "wangxiaohu",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          id: 3,
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
+          sex: "1",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12,
           hasChildren: true
         },
         {
-          id: 4,
-          date: "2016-05-03",
+          customerId: 3,
+          code: "wangxiaohu",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
+          sex: "1",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12,
+        },
+        {
+          customerId: 4,
+          code: "wangxiaohu",
+          name: "王小虎",
+          sex: "1",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12,
+        },
+        {
+          customerId: 5,
+          code: "wangxiaohu",
+          name: "王小虎",
+          sex: "1",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12,
         }
       ],
       showA: true,
       showB: false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        }
+      form: {
+        customerId: '',
+        code: "",
+        name: "",
+        sex: "",
+        phone: "",
+        carNum: "",
+        address: "",
+        createTime: "",
+        item: "",
+        partsCode: "",
+        partsname: "",
+        partsPrice: "",
+        cost: 0,
+      },
+      dateValue: ""
     };
   },
-  mounted(){
-
-  },
+  mounted() {},
   methods: {
-    chengShowValue(){
-      this.showA=false;
-      this.showB=true;
+    sexFormatter(row, column) {
+      return row.sex == 1 ? "男" : "女";
+    },
+    chengShowValue() {
+      this.showA = false;
+      this.showB = true;
     },
     handleClick(row) {
-        console.log(row);
+      console.log(row);
     },
-    updateRow(row){
-      this.showA=false;
-      this.showB=true;
+    updateRow(row) {
+      this.showA = false;
+      this.showB = true;
+      this.form=row;
     },
-    deleteRow(row){
-
-    },
+    deleteRow(row) {},
     onSubmit() {
-        console.log('submit!');
-      this.showA=true;
-      this.showB=false;
+      this.showA = true;
+      this.showB = false;
+      console.log(this.form);
     },
-    cancel(){
-      this.showA=true;
-      this.showB=false;
+    cancel() {
+      this.showA = true;
+      this.showB = false;
     },
     load(tree, treeNode, resolve) {
-      setTimeout(() => {
-        resolve([
-          {
-            id: 31,
-            date: "2016-05-01",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1519 弄"
-          },
-          {
-            id: 32,
-            date: "2016-05-01",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1519 弄"
-          }
-        ]);
-      }, 1000);
+      resolve([
+        {
+          customerId: 11,
+          code: "wangxiaohu",
+          name: "王小虎",
+          sex: "男",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          repairId:1,
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12
+        },
+        {
+          customerId: 12,
+          code: "wangxiaohu",
+          name: "王小虎",
+          sex: "女",
+          phone: "13240714417",
+          carNum: "豫S8976A",
+          address: "河南省郑州市金水区XXX",
+          createTime: "2016-05-02",
+          repairId: 2,
+          item: "换发动机机油",
+          partsCode: "",
+          partsname: "",
+          partsPrice: "",
+          cost: 59.12
+        }
+      ]);
     },
-    selected(row){
-      console.log(row)
+    selected(row) {
+      console.log(row);
+    },
+    getDate() {
+      console.log(this.dateValue);
+    },
+    getDateInForm(){
+
     }
   }
 };

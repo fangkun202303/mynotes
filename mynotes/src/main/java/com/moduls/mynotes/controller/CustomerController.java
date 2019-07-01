@@ -82,7 +82,7 @@ public class CustomerController {
     }
 
     @GetMapping("listOfCondition")
-    public Map<String,Object> listOfCustomer(String before, String after){
+    public Map<String,Object> listOfCustomer(String before, String after,Integer customerId){
         Map<String,Object> map=new HashMap<>();
         if(before.isEmpty() || after.isEmpty()){
             map.put("code",0);
@@ -90,7 +90,7 @@ public class CustomerController {
             return map;
         }else{
             map.put("code",1);
-            map.put("data",customerService.listOfCustomer(before,after));
+            map.put("data",customerService.listOfCustomer(before,after,customerId));
             return map;
         }
     }

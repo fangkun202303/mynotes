@@ -1,6 +1,7 @@
 package com.moduls.mynotes.service;
 
 import com.moduls.mynotes.pojo.Customer;
+import com.moduls.mynotes.pojo.Orders;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface CustomerService {
 
     Integer delete(Integer customerId);
 
-    List<Customer> listOfCustomer(String before, String after);
+    List<Orders> listOfCustomer(String before, String after,Integer customerId);
 }

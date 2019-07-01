@@ -3,12 +3,14 @@ package com.moduls.mynotes.service.impl;
 import com.moduls.mynotes.mapper.CustomerMapper;
 import com.moduls.mynotes.mapper.RepairMapper;
 import com.moduls.mynotes.pojo.Customer;
+import com.moduls.mynotes.pojo.Orders;
 import com.moduls.mynotes.pojo.Repair;
 import com.moduls.mynotes.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer getCustomerById(Integer customerId) {
         if(customerId<=0 && customerId!=null){
             Customer customer = customerMapper.getCustomerById(customerId);
-            List<Repair> repairs = repairMapper.listOfRepair(customerId);
+            List<Repair> repairs = repairMapper.listOfRepair(customer.getCode());
             customer.setRepairs(repairs);
             return customer;
         }
@@ -60,9 +62,31 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> listOfCustomer(String before, String after) {
+    public List<Orders> listOfCustomer(String before, String after,Integer customerId) {
         if(!before.isEmpty() && !after.isEmpty()){
-            return customerMapper.listOfCustomer(before,after);
+            List<Orders> orders=new ArrayList<>();
+//            List<Customer> customers = customerMapper.listOfCustomer(before, after);
+//            customers.stream().forEach(e->{
+//                List<Repair> repairs = repairMapper.listOfRepair(e.getCode());
+//                repairs.stream().forEach(item->{
+//                    Orders o=new Orders(
+//                            e.getCustomerId(),e.getCode(),e.getName(),e.getSex(),e.getPhone(),
+//                            e.getCarNum(),e.getAddress(),e.getCreateTime(),
+//                            item.getItem(),item.getPartsCode(),item.getPartsname(),
+//                            item.getPartsPrice(),item.getCost()
+//                    );
+//                    orders.add(o);
+//                });
+//            });
+            Customer customer = customerMapper.getCustomerById(customerId);
+            List<Repair> repairs = repairMapper.listOfRepair(customer.getCode());
+            repairs.stream().forEach(e->{
+                Orders o=new Orders(customer.getCustomerId(),customer.getCode(),customer.getName(),customer.getSex(),customer.getPhone(),
+                        customer.getCarNum(),customer.getAddress(),customer.getCreateTime(),e.getRepairId(),
+                        e.getItem(),e.getCost());
+                orders.add(o);
+            });
+            return orders;
         }
         return null;
     }

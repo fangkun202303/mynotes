@@ -12,18 +12,13 @@ import java.io.Serializable;
 public class Repair implements Serializable {
     private static final long serialVersionUID = 8735132092273200830L;
     private Integer repairId;
-    private String code;
+    private String customerCode;
     private String item;
     private String partsCode;
     private String partsname;
     private Double partsPrice;
     private Double cost;
     private String createTime;
-    private Integer customerId;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public Integer getRepairId() {
         return repairId;
@@ -33,12 +28,12 @@ public class Repair implements Serializable {
         this.repairId = repairId;
     }
 
-    public String getCode() {
-        return code;
+    public String getCustomerCode() {
+        return customerCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCustomerCode(String customerCode) {
+        this.customerCode = customerCode;
     }
 
     public String getItem() {
@@ -89,26 +84,17 @@ public class Repair implements Serializable {
         this.createTime = createTime;
     }
 
-    public Integer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
-
     @Override
     public String toString() {
         return "Repair{" +
                 "repairId=" + repairId +
-                ", code='" + code + '\'' +
+                ", customerCode='" + customerCode + '\'' +
                 ", item='" + item + '\'' +
                 ", partsCode='" + partsCode + '\'' +
                 ", partsname='" + partsname + '\'' +
                 ", partsPrice=" + partsPrice +
                 ", cost=" + cost +
                 ", createTime='" + createTime + '\'' +
-                ", customerId=" + customerId +
                 '}';
     }
 }
