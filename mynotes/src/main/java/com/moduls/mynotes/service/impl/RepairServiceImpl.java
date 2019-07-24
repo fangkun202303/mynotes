@@ -41,12 +41,14 @@ public class RepairServiceImpl implements RepairService {
 
     @Override
     public Integer delete(Integer repairId) {
-        Integer delete = repairMapper.delete(repairId);
-        return delete==1? 1:2;
+//        Integer delete = repairMapper.delete(repairId);
+//        return delete==1? 1:2;
+        System.out.printf("这个repairId是："+repairId);
+        return 1;
     }
 
     @Override
-    public List<Repair> listOfRepair(Integer customerId) {
-        return repairMapper.listOfRepair(customerId);
+    public List<Repair> listOfRepair(String customerCode) {
+        return repairMapper.listOfRepair(customerCode);
     }
 }

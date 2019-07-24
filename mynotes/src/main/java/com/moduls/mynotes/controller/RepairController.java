@@ -32,7 +32,7 @@ public class RepairController {
         return repairService.update(repair);
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     public Integer delete(Integer repairId){
         return repairService.delete(repairId);
     }

@@ -69,8 +69,7 @@
 </template>
 
 <script>
-import IndexAdd from "@/components/IndexAdd";
-
+import qs from 'qs';
 export default {
   name: "Index",
   data() {
@@ -178,9 +177,25 @@ export default {
     sexFormatter(row, column) {
       return row.sex == 1 ? "男" : "女";
     },
+    // 添加的点击事件
     chengShowValue() {
       this.showA = false;
       this.showB = true;
+      this.form={
+        customerId: '',
+        code: "",
+        name: "",
+        sex: "",
+        phone: "",
+        carNum: "",
+        address: "",
+        createTime: "",
+        item: "",
+        partsCode: "",
+        partsname: "",
+        partsPrice: "",
+        cost: 0,
+      }
     },
     handleClick(row) {
       console.log(row);
@@ -190,7 +205,13 @@ export default {
       this.showB = true;
       this.form=row;
     },
-    deleteRow(row) {},
+    deleteRow(row) {
+      const ordersId ={repairId:1};
+      this.$axios.post("/repair/delete?"+qs.stringify(ordersId))
+      .then(data=>{
+        console.log(data)
+      })
+    },
     onSubmit() {
       this.showA = true;
       this.showB = false;
