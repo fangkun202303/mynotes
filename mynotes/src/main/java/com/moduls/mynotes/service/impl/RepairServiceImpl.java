@@ -48,7 +48,7 @@ public class RepairServiceImpl implements RepairService {
     }
 
     @Override
-    public List<Repair> listOfRepair(String customerCode) {
-        return repairMapper.listOfRepair(customerCode);
+    public List<Repair> listOfRepair(Long customerId) {
+        return repairMapper.listOfRepair(customerId);
     }
 }

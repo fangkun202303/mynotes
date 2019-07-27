@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description: CustomerService的实现
@@ -21,6 +22,7 @@ import java.util.List;
  * @create: 2019-06-24
  */
 @Service
+@SuppressWarnings("all")
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -30,10 +32,10 @@ public class CustomerServiceImpl implements CustomerService {
     private RepairMapper repairMapper;
 
     @Override
-    public Customer getCustomerById(Integer customerId) {
+    public Customer getCustomerById(Long customerId) {
         if(customerId<=0 && customerId!=null){
             Customer customer = customerMapper.getCustomerById(customerId);
-            List<Repair> repairs = repairMapper.listOfRepair(customer.getCode());
+            List<Repair> repairs = repairMapper.listOfRepair(customer.getCustomerId());
             customer.setRepairs(repairs);
             return customer;
         }
@@ -42,46 +44,87 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public Integer save(Customer customer) {
-        return customerMapper.save(customer)==1? 1:2;
-    }
+    public Integer save(Orders orders) {
+        Customer customer=new Customer();
+        customer.setName(orders.getName());
+        customer.setSex(orders.getSex());
+        customer.setPhone(orders.getPhone());
+        customer.setCustomerId(orders.getCustomerId());
+        customer.setCarNum(orders.getCarNum());
+        customer.setCreateTime(orders.getCreateTime());
+        customer.setAddress(orders.getAddress());
+        customer.setCustomerId(System.currentTimeMillis());
+        Integer save = customerMapper.save(customer);
 
-    @Transactional
-    @Override
-    public Integer update(Customer customer) {
-        return customerMapper.update(customer)==1? 1:2;
-    }
 
-    @Transactional
-    @Override
-    public Integer delete(Integer customerId) {
-        if(customerId<=0 && customerId!=null){
-            return customerMapper.delete(customerId)==1? 1:2;
+
+        Repair repair=new Repair();
+        repair.setItem(orders.getItem());
+        repair.setCost(orders.getCost());
+        repair.setCreateTime(orders.getCreateTime());
+        repair.setCustomerid(customer.getCustomerId());
+
+        Integer save1 = repairMapper.save(repair);
+
+        if(save==1 && save1==1){
+            return 1;
+        }else{
+            return 2;
         }
-        return null;
+    }
+
+    @Transactional
+    @Override
+    public Integer update(Orders orders) {
+        Customer customer=new Customer();
+        customer.setName(orders.getName());
+        customer.setSex(orders.getSex());
+        customer.setPhone(orders.getPhone());
+        customer.setCustomerId(orders.getCustomerId());
+        customer.setCarNum(orders.getCarNum());
+        customer.setCreateTime(orders.getCreateTime());
+        customer.setAddress(orders.getAddress());
+
+        Repair repair=new Repair();
+        repair.setItem(orders.getItem());
+        repair.setCost(orders.getCost());
+        repair.setCreateTime(orders.getCreateTime());
+        repair.setCustomerid(orders.getCustomerId());
+        repair.setRepairId(orders.getRepairId());
+        Integer update = customerMapper.update(customer);
+
+        Integer update1 = repairMapper.update(repair);
+
+        if(update==1 && update1==1){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+
+    @Transactional
+    @Override
+    public Integer delete(Long customerId , Integer repairId) {
+        if(customerId>0 && customerId!=null && repairId>0 && repairId!=null){
+            Integer delete = customerMapper.delete(customerId);
+            Integer delete1 = repairMapper.delete(repairId);
+            if(delete==1 && delete1==1){
+                return 1;
+            }else{
+                return 2;
+            }
+        }
+        return 2;
     }
 
     @Override
-    public List<Orders> listOfCustomer(String before, String after,Integer customerId) {
-        if(!before.isEmpty() && !after.isEmpty()){
+    public List<Orders> listOfCustomer(String date,Long customerId) {
+        if(!date.isEmpty() ){
             List<Orders> orders=new ArrayList<>();
-//            List<Customer> customers = customerMapper.listOfCustomer(before, after);
-//            customers.stream().forEach(e->{
-//                List<Repair> repairs = repairMapper.listOfRepair(e.getCode());
-//                repairs.stream().forEach(item->{
-//                    Orders o=new Orders(
-//                            e.getCustomerId(),e.getCode(),e.getName(),e.getSex(),e.getPhone(),
-//                            e.getCarNum(),e.getAddress(),e.getCreateTime(),
-//                            item.getItem(),item.getPartsCode(),item.getPartsname(),
-//                            item.getPartsPrice(),item.getCost()
-//                    );
-//                    orders.add(o);
-//                });
-//            });
             Customer customer = customerMapper.getCustomerById(customerId);
-            List<Repair> repairs = repairMapper.listOfRepair(customer.getCode());
+            List<Repair> repairs = repairMapper.listOfRepair(customer.getCustomerId());
             repairs.stream().forEach(e->{
-                Orders o=new Orders(customer.getCustomerId(),customer.getCode(),customer.getName(),customer.getSex(),customer.getPhone(),
+                Orders o=new Orders(customer.getCustomerId(),customer.getName(),customer.getSex(),customer.getPhone(),
                         customer.getCarNum(),customer.getAddress(),customer.getCreateTime(),e.getRepairId(),
                         e.getItem(),e.getCost());
                 orders.add(o);
@@ -89,5 +132,26 @@ public class CustomerServiceImpl implements CustomerService {
             return orders;
         }
         return null;
+    }
+
+    @Override
+    public List<Orders> listCustomerInToday(String date) {
+        if(date.isEmpty()){
+            return null;
+        }else{
+            List<Customer> customers =customerMapper.listCustomerInToday(date);
+            List<Repair> repairs = repairMapper.listRepairInToday(date);
+            List<Orders> orders=new ArrayList<>();
+            customers.stream().forEach(c->{
+                List<Repair> list = repairs.stream().filter(r -> String.valueOf(r.getCustomerid().toString()).equals(c.getCustomerId().toString())).collect(Collectors.toList());
+                list.stream().forEach(repair -> {
+                    Orders o=new Orders(c.getCustomerId(),c.getName(),c.getSex(),c.getPhone(),
+                            c.getCarNum(),c.getAddress(),c.getCreateTime(),repair.getRepairId(),
+                            repair.getItem(),repair.getCost());
+                    orders.add(o);
+                });
+            });
+            return orders;
+        }
     }
 }

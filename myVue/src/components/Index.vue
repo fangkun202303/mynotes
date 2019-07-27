@@ -9,9 +9,7 @@
         style="width: 100%;margin-bottom: 20px;"
         row-key="customerId"
         border
-        lazy
-        :load="load"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :tree-props="{children: 'children'}"
       >
         <el-table-column prop="name" label="姓名" sortable width="180"></el-table-column>
         <el-table-column prop="sex" label="性别" sortable width="180" :formatter="sexFormatter"></el-table-column>
@@ -22,7 +20,7 @@
         <el-table-column prop="cost" label="维修价格" sortable width="180"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+<!--            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
             <el-button type="text" size="small" @click="updateRow(scope.row)">编辑</el-button>
             <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
           </template>
@@ -60,7 +58,7 @@
           <el-input v-model="form.address" placeholder="请输入客户地址"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          <el-button type="primary" @click="onSubmit">保存</el-button>
           <el-button @click="cancel()">取消</el-button>
         </el-form-item>
       </el-form>
@@ -70,88 +68,15 @@
 
 <script>
 import qs from 'qs';
+let moment = require("moment");
+import { Message } from 'element-ui';
 export default {
   name: "Index",
   data() {
     return {
-      tableData: [
-        {
-          customerId: 1,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "1",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12,
-        },
-        {
-          customerId: 2,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "1",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12,
-          hasChildren: true
-        },
-        {
-          customerId: 3,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "1",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12,
-        },
-        {
-          customerId: 4,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "1",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12,
-        },
-        {
-          customerId: 5,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "1",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12,
-        }
-      ],
+      // row.sex == '',
+      // sexFormatter:sexFormatter == '1' ? "男" : "女",
+      tableData: [],
       showA: true,
       showB: false,
       form: {
@@ -168,14 +93,24 @@ export default {
         partsname: "",
         partsPrice: "",
         cost: 0,
+        repairId:""
       },
       dateValue: ""
     };
   },
-  mounted() {},
+  mounted() {
+    // 初始化页面数据
+    this.initMyvue();
+
+    // 获取列表数据
+    this.getAll();
+  },
   methods: {
+    initMyvue(){
+      this.dateValue=new Date();
+    },
     sexFormatter(row, column) {
-      return row.sex == 1 ? "男" : "女";
+      return row.sex == '1' ? "男" : "女";
     },
     // 添加的点击事件
     chengShowValue() {
@@ -206,65 +141,84 @@ export default {
       this.form=row;
     },
     deleteRow(row) {
-      const ordersId ={repairId:1};
-      this.$axios.post("/repair/delete?"+qs.stringify(ordersId))
+      const ordersId ={repairId:row.repairId,customerId:row.customerId};
+      this.$axios.delete("/delete?"+qs.stringify(ordersId))
       .then(data=>{
-        console.log(data)
+        if(data.data.code=='1'){
+          Message.success("删除成功！");
+        }else{
+          Message.error("删除失败！");
+        }
+        this.getAll();
       })
     },
     onSubmit() {
-      this.showA = true;
-      this.showB = false;
-      console.log(this.form);
+      const orders={
+        customerId: this.form.customerId,
+        code: this.form.code,
+        name: this.form.name,
+        sex: this.form.sex,
+        phone: this.form.phone,
+        carNum: this.form.carNum,
+        address: this.form.address,
+        createTime: this.form.createTime,
+        item: this.form.item,
+        partsCode: this.form.partsCode,
+        partsname: this.form.partsname,
+        partsPrice: this.form.partsPrice,
+        cost: this.form.cost,
+        repairId: this.form.repairId
+      }
+      if(orders.customerId==""){
+        // add
+        this.$axios.post("save?"+qs.stringify(orders)).then(result=>{
+          if(result.data.code=='1'){
+            Message.success("添加成功！");
+          }else{
+            Message.error("添加失败！");
+          };
+          this.showA = true;
+          this.showB = false;
+          this.getAll();
+        })
+      }else{
+        // update
+        this.$axios.put("update?"+qs.stringify(orders)).then(result=>{
+          if(result.data.code=='1'){
+            Message.success("修改成功！");
+          }else{
+            Message.error("修改失败！");
+          };
+          this.showA = true;
+          this.showB = false;
+          this.getAll();
+        })
+      }
     },
     cancel() {
       this.showA = true;
       this.showB = false;
     },
-    load(tree, treeNode, resolve) {
-      resolve([
-        {
-          customerId: 11,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "男",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          repairId:1,
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12
-        },
-        {
-          customerId: 12,
-          code: "wangxiaohu",
-          name: "王小虎",
-          sex: "女",
-          phone: "13240714417",
-          carNum: "豫S8976A",
-          address: "河南省郑州市金水区XXX",
-          createTime: "2016-05-02",
-          repairId: 2,
-          item: "换发动机机油",
-          partsCode: "",
-          partsname: "",
-          partsPrice: "",
-          cost: 59.12
-        }
-      ]);
-    },
-    selected(row) {
-      console.log(row);
-    },
     getDate() {
-      console.log(this.dateValue);
+      const that=this;
+      this.$axios.get("listCustomerInToday?"+qs.stringify({date:this.dateValue})).then(result=>{
+        if(result.data.code=="1"){
+          that.tableData=result.data.data;
+        }
+      })
     },
     getDateInForm(){
 
+    },
+
+    getAll(){
+      const that=this;
+      console.log(moment(this.dateValue).format("YYYY-MM-DD"))
+      this.$axios.get("listCustomerInToday?"+qs.stringify({date:moment(this.dateValue).format("YYYY-MM-DD")})).then(result=>{
+        if(result.data.code=='1'){
+          that.tableData=result.data.data;
+        }
+      })
     }
   }
 };

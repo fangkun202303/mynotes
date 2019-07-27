@@ -8,10 +8,9 @@ package com.moduls.mynotes.pojo;
  * @create: 2019-07-01
  */
 public class Orders {
-    private Integer customerId;
-    private String code;
+    private Long customerId;
     private String name;
-    private Integer sex;
+    private String sex;
     private String phone;
     private String carNum;
     private String address;
@@ -23,10 +22,9 @@ public class Orders {
     private Double partsPrice;
     private Double cost;
 
-    public Orders(Integer customerId, String code, String name, Integer sex, String phone,
+    public Orders(Long customerId, String name, String sex, String phone,
                   String carNum, String address, String createTime, Integer repairId, String item, Double cost) {
         this.customerId = customerId;
-        this.code = code;
         this.name = name;
         this.sex = sex;
         this.phone = phone;
@@ -38,21 +36,12 @@ public class Orders {
         this.cost = cost;
     }
 
-    public Integer getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
-    public Orders setCustomerId(Integer customerId) {
+    public Orders setCustomerId(Long customerId) {
         this.customerId = customerId;
-        return this;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Orders setCode(String code) {
-        this.code = code;
         return this;
     }
 
@@ -65,11 +54,11 @@ public class Orders {
         return this;
     }
 
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public Orders setSex(Integer sex) {
+    public Orders setSex(String sex) {
         this.sex = sex;
         return this;
     }
@@ -108,6 +97,14 @@ public class Orders {
     public Orders setCreateTime(String createTime) {
         this.createTime = createTime;
         return this;
+    }
+
+    public Integer getRepairId() {
+        return repairId;
+    }
+
+    public void setRepairId(Integer repairId) {
+        this.repairId = repairId;
     }
 
     public String getItem() {

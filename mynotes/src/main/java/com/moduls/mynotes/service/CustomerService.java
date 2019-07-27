@@ -14,13 +14,15 @@ import java.util.List;
  */
 public interface CustomerService {
 
-    Customer getCustomerById(Integer customerId);
+    Customer getCustomerById(Long customerId);
 
-    Integer save(Customer customer);
+    Integer save(Orders orders);
 
-    Integer update(Customer customer);
+    Integer update(Orders orders);
 
-    Integer delete(Integer customerId);
+    Integer delete(Long customerId , Integer repairId);
 
-    List<Orders> listOfCustomer(String before, String after,Integer customerId);
+    List<Orders> listOfCustomer(String date,Long customerId);
+
+    List<Orders> listCustomerInToday(String date);
 }

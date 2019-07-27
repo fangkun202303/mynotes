@@ -12,30 +12,21 @@ import java.util.List;
  */
 public class Customer implements Serializable {
     private static final long serialVersionUID = 8735132092273200831L;
-    private Integer customerId;
-    private String code;
+    private Long customerId;
     private String name;
-    private Integer sex;
+    private String sex;
     private String phone;
     private String carNum;
     private String address;
     private String createTime;
     private List<Repair> repairs;
 
-    public Integer getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(Long customerId) {
         this.customerId = customerId;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getName() {
@@ -46,11 +37,11 @@ public class Customer implements Serializable {
         this.name = name;
     }
 
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Integer sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
@@ -98,9 +89,8 @@ public class Customer implements Serializable {
     public String toString() {
         return "Customer{" +
                 "customerId=" + customerId +
-                ", code='" + code + '\'' +
                 ", name='" + name + '\'' +
-                ", sex=" + sex +
+                ", sex='" + sex + '\'' +
                 ", phone='" + phone + '\'' +
                 ", carNum='" + carNum + '\'' +
                 ", address='" + address + '\'' +

@@ -1,6 +1,8 @@
 package com.moduls.mynotes.controller;
 
 import com.moduls.mynotes.pojo.Customer;
+import com.moduls.mynotes.pojo.Orders;
+import com.moduls.mynotes.pojo.Repair;
 import com.moduls.mynotes.service.CustomerService;
 import com.moduls.mynotes.service.RepairService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.Map;
  * @create: 2019-06-24
  */
 @RestController
+@SuppressWarnings("all")
 public class CustomerController {
 
     @Autowired
@@ -26,7 +29,7 @@ public class CustomerController {
     private RepairService repairService;
 
     @GetMapping("getCustomerById")
-    public Map<String,Object> getCustomerById(Integer customerId){
+    public Map<String,Object> getCustomerById(Long customerId){
         Map<String,Object> map=new HashMap<>();
         if(customerId<=0 || customerId==null){
             map.put("code",0);
@@ -40,35 +43,35 @@ public class CustomerController {
     }
 
     @PostMapping("save")
-    public Map<String,Object> save(Customer customer){
+    public Map<String,Object> save(Orders orders){
         Map<String,Object> map=new HashMap<>();
-        if(customer==null){
+        if(orders==null){
             map.put("code",0);
             map.put("data",null);
             return map;
         }else{
             map.put("code",1);
-            map.put("data",customerService.save(customer));
+            map.put("data",customerService.save(orders));
             return map;
         }
     }
 
     @PutMapping("update")
-    public Map<String,Object> update(Customer customer){
+    public Map<String,Object> update(Orders orders){
         Map<String,Object> map=new HashMap<>();
-        if(customer==null){
+        if(orders==null){
             map.put("code",0);
             map.put("data",null);
             return map;
         }else{
             map.put("code",1);
-            map.put("data",customerService.update(customer));
+            map.put("data",customerService.update(orders));
             return map;
         }
     }
 
     @DeleteMapping("delete")
-    public Map<String,Object> delete(Integer customerId){
+    public Map<String,Object> delete(Long customerId , Integer repairId){
         Map<String,Object> map=new HashMap<>();
         if(customerId<=0 || customerId==null){
             map.put("code",0);
@@ -76,21 +79,35 @@ public class CustomerController {
             return map;
         }else{
             map.put("code",1);
-            map.put("data",customerService.delete(customerId));
+            map.put("data",customerService.delete(customerId,repairId));
             return map;
         }
     }
 
     @GetMapping("listOfCondition")
-    public Map<String,Object> listOfCustomer(String before, String after,Integer customerId){
+    public Map<String,Object> listOfCustomer(String date,Long customerId){
         Map<String,Object> map=new HashMap<>();
-        if(before.isEmpty() || after.isEmpty()){
+        if(date.isEmpty()){
             map.put("code",0);
             map.put("data",null);
             return map;
         }else{
             map.put("code",1);
-            map.put("data",customerService.listOfCustomer(before,after,customerId));
+            map.put("data",customerService.listOfCustomer(date,customerId));
+            return map;
+        }
+    }
+
+    @GetMapping("/listCustomerInToday")
+    public Map<String,Object> listCustomerInToday(String date){
+        Map<String,Object> map=new HashMap<>();
+        if(date.isEmpty()){
+            map.put("code",0);
+            map.put("data",null);
+            return map;
+        }else{
+            map.put("code",1);
+            map.put("data",customerService.listCustomerInToday(date));
             return map;
         }
     }

@@ -17,18 +17,21 @@ import java.util.List;
 @Repository
 public interface CustomerMapper {
 
-    @Select("select customerid, code, name, sex, phone, carnum, address, createtime from customer where customerid=#{customerId}")
-    Customer getCustomerById(@Param("customerId") Integer customerId);
+    @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where customerid=#{customerId}")
+    Customer getCustomerById(@Param("customerId") Long customerId);
 
-    @Insert("insert into customer (customerid, code, name, sex, phone, carnum, address, createtime) values (#{code}, #{name}, #{sex}, #{phone}, #{carNum}, #{address}, #{createTime} )")
+    @Insert("insert into customer (customerid, name, sex, phone, carnum, address, createtime) values (#{customerId}, #{name}, #{sex}, #{phone}, #{carNum}, #{address}, #{createTime} )")
     Integer save(Customer customer);
 
     @Update("update customer set name=#{name}, sex=#{sex}, phone=#{phone}, carnum=#{carNum}, address=#{address} where customerid=#{customerId}")
     Integer update(Customer customer);
 
     @Delete("delete from customer where customerid=#{customerId}")
-    Integer delete(@Param("customerId") Integer customerId);
+    Integer delete(@Param("customerId") Long customerId);
 
-    @Select("select customerid, code, name, sex, phone, carnum, address, createtime from customer where createtime<#{after} and createtime> #{before}")
+    @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where createtime<#{after} and createtime> #{before}")
     List<Customer> listOfCustomer(String before, String after);
+
+    @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where createtime=#{date} order by name")
+    List<Customer> listCustomerInToday(@Param("date") String date);
 }

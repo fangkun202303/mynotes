@@ -6,7 +6,7 @@ spring:
   application:
     name: mynotes
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/testbasedata?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+    url: jdbc:mysql://127.0.0.1:3306/mycar?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: root
     username: root

@@ -21,5 +21,5 @@ public interface RepairService {
 
     Integer delete(Integer repairId);
 
-    List<Repair> listOfRepair(String customerCode);
+    List<Repair> listOfRepair(Long customerId);
 }

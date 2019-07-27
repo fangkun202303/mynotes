@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Repair implements Serializable {
     private static final long serialVersionUID = 8735132092273200830L;
     private Integer repairId;
-    private String customerCode;
+    private Long customerid;
     private String item;
     private String partsCode;
     private String partsname;
@@ -28,12 +28,12 @@ public class Repair implements Serializable {
         this.repairId = repairId;
     }
 
-    public String getCustomerCode() {
-        return customerCode;
+    public Long getCustomerid() {
+        return customerid;
     }
 
-    public void setCustomerCode(String customerCode) {
-        this.customerCode = customerCode;
+    public void setCustomerid(Long customerid) {
+        this.customerid = customerid;
     }
 
     public String getItem() {
@@ -88,7 +88,7 @@ public class Repair implements Serializable {
     public String toString() {
         return "Repair{" +
                 "repairId=" + repairId +
-                ", customerCode='" + customerCode + '\'' +
+                ", customerid=" + customerid +
                 ", item='" + item + '\'' +
                 ", partsCode='" + partsCode + '\'' +
                 ", partsname='" + partsname + '\'' +
