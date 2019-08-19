@@ -24,5 +24,5 @@ public interface CustomerService {
 
     List<Orders> listOfCustomer(String date,Long customerId);
 
-    List<Orders> listCustomerInToday(String date);
+    List<Orders> listCustomerInToday(String date,String kname, String knum);
 }

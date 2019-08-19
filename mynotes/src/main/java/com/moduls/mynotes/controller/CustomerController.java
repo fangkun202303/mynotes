@@ -99,7 +99,7 @@ public class CustomerController {
     }
 
     @GetMapping("/listCustomerInToday")
-    public Map<String,Object> listCustomerInToday(String date){
+    public Map<String,Object> listCustomerInToday(String date,String kname, String knum){
         Map<String,Object> map=new HashMap<>();
         if(date.isEmpty()){
             map.put("code",0);
@@ -107,7 +107,7 @@ public class CustomerController {
             return map;
         }else{
             map.put("code",1);
-            map.put("data",customerService.listCustomerInToday(date));
+            map.put("data",customerService.listCustomerInToday(date,kname,knum));
             return map;
         }
     }

@@ -9,6 +9,7 @@ import com.moduls.mynotes.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,11 +136,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Orders> listCustomerInToday(String date) {
+    public List<Orders> listCustomerInToday(String date,String kname, String knum) {
         if(date.isEmpty()){
             return null;
         }else{
-            List<Customer> customers =customerMapper.listCustomerInToday(date);
+            List<Customer> customers =null;
+            if(StringUtils.isEmpty(kname) && StringUtils.isEmpty(knum)){
+                customers =customerMapper.listCustomerInToday(date);
+            }else if(!StringUtils.isEmpty(kname) && StringUtils.isEmpty(knum)){
+                customers=customerMapper.listCustomerInTodayByName(date,kname);
+            }else if(StringUtils.isEmpty(kname) && !StringUtils.isEmpty(knum)){
+                customers=customerMapper.listCustomerInTodayByNum(date,knum);
+            }else if(!StringUtils.isEmpty(kname) && !StringUtils.isEmpty(knum)){
+                customers=customerMapper.listCustomerInTodayByNumAndName(date,knum,kname);
+            }
             List<Repair> repairs = repairMapper.listRepairInToday(date);
             List<Orders> orders=new ArrayList<>();
             customers.stream().forEach(c->{

@@ -34,4 +34,14 @@ public interface CustomerMapper {
 
     @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where createtime=#{date} order by name")
     List<Customer> listCustomerInToday(@Param("date") String date);
+
+    @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where createtime=#{date} and name like  CONCAT('%',#{kname},'%')  order by name")
+    List<Customer> listCustomerInTodayByName(@Param("date") String date, @Param("kname")String kname);
+
+    @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where createtime=#{date} and carnum like  CONCAT('%',#{knum},'%')  order by name")
+    List<Customer> listCustomerInTodayByNum(@Param("date") String date, @Param("knum")String knum);
+
+    @Select("select customerid, name, sex, phone, carnum, address, createtime from customer where createtime=#{date} and carnum like  CONCAT('%',#{knum},'%') and name like  CONCAT('%',#{kname},'%') order by name")
+    List<Customer> listCustomerInTodayByNumAndName(@Param("date") String date, @Param("knum")String knum, @Param("kname")String kname);
+
 }
